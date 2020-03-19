@@ -6,7 +6,7 @@
 		enum.new(mode, data)
 		created a new enum of mode 'mode' (described lower) from dataset data
 		
-		enum.wrap(value) -- wraps a number or a string into the enum, so we can compare our enums to strings or numbers
+		enum.Wrap(value) -- wraps a number or a string into the enum, so we can compare our enums to strings or numbers
 		for example enum.new("values", {test = 1}).test == enum.wrap(1) will return true
 		
 		enum.GetAll() -- returns a table of all enum keys from an enum object
