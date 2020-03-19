@@ -1,6 +1,7 @@
 --[[
 	Created by Kacprate
 	Creation date: 19 March 2020
+	Last updated: 19 March 2020
 	
 	Functions:
 		enum.new(mode, data)
@@ -9,7 +10,8 @@
 		enum.Wrap(value) -- wraps a number or a string into the enum, so we can compare our enums to strings or numbers
 		for example enum.new("values", {test = 1}).test == enum.wrap(1) will return true
 		
-		enum.GetAll() -- returns a table of all enum keys from an enum object
+		enumObject.GetAll(enumObject) -- returns a table of all enum keys from an enum object (enumObject)
+		(enumObject:GetAll())
 --]]
 
 local enum = {}
@@ -67,37 +69,33 @@ function enumPart.new(key, value, wrapped, wrappedType) -- wrapBy: 1 - value, 2 
 		__index = function(self, index)
 			local tmp = data[index]
 			if tmp == nil then
-				error("Wrong use of EnumPart index, only Key or Value, index provided: " .. index)
+				error("Wrong use of EnumPart index, only Key, Value, Wrapped or WrappedType, index provided: " .. index)
 			end
 			return tmp	
 		end;
 		__newindex = function(self, index, val) error("Attempt to modify a read-only table") end;
 		__eq = eq;
 		__tostring = function(self)
-			if data.Wrapped then
-				if data.WrappedType == "string" then
-					return '["' .. data.Key .. '"]'
-				elseif data.WrappedType == "number" then
-					return "[" .. data.Value .. "]"
+			if self.Wrapped then
+				if self.WrappedType == "string" then
+					return '["' .. self.Key .. '"]'
+				elseif self.WrappedType == "number" then
+					return "[" .. self.Value .. "]"
 				end
 			end
-			return '["' .. data.Key .. '", ' .. data.Value .. ']'
-		end
+			return '["' .. self.Key .. '", ' .. self.Value .. ']'
+		end;
+		__metatable = false
 	}
 	
-	local temp = newproxy(true)
-	local meta = getmetatable(temp)
-	meta.__metatable = false
-	for i,v in pairs(metatable) do
-		meta[i] = metatable[i]
-	end
-	
-	return temp
+	return setmetatable({}, metatable)
 end
 
 local function keyCheck(key)
 	if key == "GetAll" then
-		error("Cannot create Enum key GetAll as it is a built-in Enum function")
+		error("Cannot create Enum key 'GetAll' as it is a built-in Enum function")
+	elseif key == "data" then
+		error("Cannot create Enum key 'data' as it is a built-in Enum field")
 	end
 end
 
@@ -129,14 +127,20 @@ function enum.new(mode, data)
 	
 	local metatable = {
 		__index = function(self, index)
+			assert(type(self) == "table", "First argument must be a table")
+			assert(index ~= nil, "Second argument is nil")
+			
 			if index == "GetAll" then
-				return function() 
+				return function(self)
+					assert(type(self) == "table", "First argument must be a table")
 					local tmp = {}
-					for i,v in pairs(enumData.data) do
+					for i,v in pairs(self.data) do
 						table.insert(tmp, i)
 					end
 					return tmp 
 				end
+			elseif index == "data" then
+				return enumData.data
 			end
 			
 			local data = enumData.data[index]
@@ -153,17 +157,11 @@ function enum.new(mode, data)
 			end
 			result = result .. "]"
 			return string.gsub(result, "%[, ", "%[", 1)
-		end
+		end;
+		__metatable = false
 	}
 	
-	local temp = newproxy(true)
-	local meta = getmetatable(temp)
-	meta.__metatable = false
-	for i,v in pairs(metatable) do
-		meta[i] = metatable[i]
-	end
-	
-	return temp
+	return setmetatable({}, metatable)
 end
 
 enum.Wrap = function(value)
