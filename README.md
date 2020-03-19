@@ -1,4 +1,4 @@
-# Important: Uses newproxy function which is not available in Lua 5.2+, but still works in Roblox Lua.
+IMPORTANT: Uses newproxy function which is not available in Lua 5.2+, but still works in Roblox Lua.
 
 # Lua-Enum
 Lua Enum Library - provides Enum object creation with a bunch of useful functionalities
