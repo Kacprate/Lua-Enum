@@ -118,12 +118,12 @@ function enum.new(mode, data)
 			if enumData.data[v] ~= nil then
 				error("Enum key " .. v .. " is not unique")
 			end
-			enumData.data[v] = enumPart.new(v, i, false)
+			enumData.data[v] = enumPart.new(v, i)
 		end	
 	elseif mode == "values" then
 		for i,v in pairs(data) do
 			keyCheck(i)
-			enumData.data[i] = enumPart.new(i, v, false)
+			enumData.data[i] = enumPart.new(i, v)
 		end	
 	end
 	
