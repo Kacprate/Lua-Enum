@@ -53,7 +53,7 @@ end;
 local wrapTypes = {"string", "number"}
 
 local enumPart = {}
-function enumPart.new(key, value, wrapped, wrappedType) -- wrapBy: 1 - value, 2 - string
+function enumPart.new(key, value, wrapped, wrappedType)
 	if wrapped then
 		assert(isIn(wrappedType, wrapTypes), "Cannot wrap a " .. wrappedType .. " object")
 	end
